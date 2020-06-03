@@ -45,11 +45,11 @@ let app = express();
 
 app.use(cookieParser());
 
-app.options("/refresh_token", function (req, res) {
+app.use(function (req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Methods", "*");
   res.header("Access-Control-Allow-Headers", "*");
-  res.end();
+  next();
 });
 
 app.get("/login", function (req, res) {
