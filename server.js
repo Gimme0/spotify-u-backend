@@ -1,5 +1,16 @@
 let scope = process.env.SCOPE || "user-read-private user-read-email";
 const allowedOrigins = ["http://localhost:3000", "https://gimme0.github.io"];
+
+let express = require("express");
+let request = require("request");
+let cors = require("cors");
+let querystring = require("querystring");
+let cookieParser = require("cookie-parser");
+
+let redirect_uri = process.env.REDIRECT_URI || "http://localhost:8888/callback";
+
+let stateKey = "spotify_auth_state";
+
 const corsOptions = {
   origin: function (origin, callback) {
     if (allowedOrigins.indexOf(origin) !== -1) {
@@ -9,21 +20,6 @@ const corsOptions = {
     }
   },
 };
-let allowCrossDomain = function (req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "*");
-  next();
-};
-
-let express = require("express");
-let request = require("request");
-var cors = require("cors");
-let querystring = require("querystring");
-var cookieParser = require("cookie-parser");
-
-let redirect_uri = process.env.REDIRECT_URI || "http://localhost:8888/callback";
-
-let stateKey = "spotify_auth_state";
 
 /**
  * Generates a random string containing numbers and letters
@@ -43,14 +39,7 @@ var generateRandomString = function (length) {
 
 let app = express();
 
-app.use(cookieParser());
-
-app.use(function (req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Methods", "*");
-  res.header("Access-Control-Allow-Headers", "*");
-  next();
-});
+app.use(cors(corsOptions)).use(cookieParser());
 
 app.get("/login", function (req, res) {
   var state = generateRandomString(16);
@@ -161,6 +150,13 @@ app.get("/refresh_token", function (req, res) {
       access_token: access_token,
     });
   });
+});
+
+app.get("/testt", function (req, res) {
+  var refresh_token = req.query.refresh_token;
+  var list = ["item1", "item2", refresh_token];
+  res.json(list);
+  console.log("Sent list of items");
 });
 
 let port = process.env.PORT || 8888;
