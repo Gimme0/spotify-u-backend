@@ -9,6 +9,11 @@ const corsOptions = {
     }
   },
 };
+let allowCrossDomain = function (req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "*");
+  next();
+};
 
 let express = require("express");
 let request = require("request");
@@ -38,7 +43,7 @@ var generateRandomString = function (length) {
 
 let app = express();
 
-app.use(cors()).use(cookieParser());
+app.use(cors()).use(allowCrossDomain).use(cookieParser());
 
 app.get("/login", function (req, res) {
   var state = generateRandomString(16);
@@ -120,7 +125,7 @@ app.get("/callback", function (req, res) {
   });
 });
 
-app.get("/refresh_token", cors(corsOptions), function (req, res) {
+app.get("/refresh_token", function (req, res) {
   // requesting access token from refresh token
   var refresh_token = req.query.refresh_token;
   var authOptions = {
