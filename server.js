@@ -43,7 +43,14 @@ var generateRandomString = function (length) {
 
 let app = express();
 
-app.use(cors({ origin: "http://localhost:3000" })).use(cookieParser());
+app.use(cookieParser());
+
+app.options("/refresh_token", function (req, res) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Methods", "*");
+  res.header("Access-Control-Allow-Headers", "*");
+  res.end();
+});
 
 app.get("/login", function (req, res) {
   var state = generateRandomString(16);
