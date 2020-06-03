@@ -43,7 +43,7 @@ var generateRandomString = function (length) {
 
 let app = express();
 
-app.use(cors()).use(allowCrossDomain).use(cookieParser());
+app.use(allowCrossDomain).use(cookieParser());
 
 app.get("/login", function (req, res) {
   var state = generateRandomString(16);
