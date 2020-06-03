@@ -1,8 +1,14 @@
 let scope = process.env.SCOPE || "user-read-private user-read-email";
-let allowedOrigins = [
-  "http://localhost:3000",
-  "https://gimme0.github.io/SpotifyU",
-];
+const allowedOrigins = ["http://localhost:3000", "https://gimme0.github.io"];
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+};
 
 let express = require("express");
 let request = require("request");
@@ -114,7 +120,7 @@ app.get("/callback", function (req, res) {
   });
 });
 
-app.get("/refresh_token", cors(), function (req, res) {
+app.get("/refresh_token", cors(corsOptions), function (req, res) {
   // requesting access token from refresh token
   var refresh_token = req.query.refresh_token;
   var authOptions = {
