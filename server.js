@@ -32,13 +32,7 @@ var generateRandomString = function (length) {
 
 let app = express();
 
-app
-  .use(
-    cors({
-      origin: "*",
-    })
-  )
-  .use(cookieParser());
+app.use(cors()).use(cookieParser());
 
 app.get("/login", function (req, res) {
   var state = generateRandomString(16);
@@ -120,7 +114,7 @@ app.get("/callback", function (req, res) {
   });
 });
 
-app.get("/refresh_token", function (req, res) {
+app.get("/refresh_token", cors(), function (req, res) {
   // requesting access token from refresh token
   var refresh_token = req.query.refresh_token;
   var authOptions = {
