@@ -32,7 +32,7 @@ let app = express();
 app.use(cors(corsOptions)).use(cookieParser());
 
 app.get("/login", function (req, res) {
-  var state = generateRandomString(16);
+  let state = generateRandomString(16);
   res.cookie(stateKey, state);
 
   res.redirect(
@@ -49,8 +49,8 @@ app.get("/login", function (req, res) {
 
 app.get("/callback", function (req, res) {
   let code = req.query.code || null;
-  var state = req.query.state || null;
-  var storedState = req.cookies ? req.cookies[stateKey] : null;
+  let state = req.query.state || null;
+  let storedState = req.cookies ? req.cookies[stateKey] : null;
 
   if (state === null || state !== storedState) {
     res.redirect(
@@ -94,9 +94,9 @@ app.get("/callback", function (req, res) {
       return;
     }
 
-    var access_token = body.access_token;
-    var expires_in = body.expires_in;
-    var refresh_token = body.refresh_token;
+    let access_token = body.access_token;
+    let expires_in = body.expires_in;
+    let refresh_token = body.refresh_token;
     let uri = process.env.FRONTEND_URI;
 
     res.redirect(
@@ -113,8 +113,8 @@ app.get("/callback", function (req, res) {
 
 app.get("/refresh_token", function (req, res) {
   // requesting access token from refresh token
-  var refresh_token = req.query.refresh_token;
-  var authOptions = {
+  let refresh_token = req.query.refresh_token;
+  let authOptions = {
     url: "https://accounts.spotify.com/api/token",
     form: {
       grant_type: "refresh_token",
@@ -135,7 +135,7 @@ app.get("/refresh_token", function (req, res) {
   request.post(authOptions, function (error, response, body) {
     if (error || response.statusCode !== 200) return;
 
-    var access_token = body.access_token;
+    let access_token = body.access_token;
     res.send({
       access_token: access_token,
     });
@@ -144,7 +144,7 @@ app.get("/refresh_token", function (req, res) {
 
 let port = process.env.PORT || 8888;
 console.log(
-  "Listening on port ${port}. Go /login to initiate authentication flow."
+  `Listening on port ${port}. Go /login to initiate authentication flow.`
 );
 app.listen(port);
 
@@ -153,12 +153,12 @@ app.listen(port);
  * @param  {number} length The length of the string
  * @return {string} The generated string
  */
-var generateRandomString = function (length) {
-  var text = "";
-  var possible =
+let generateRandomString = function (length) {
+  let text = "";
+  let possible =
     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
-  for (var i = 0; i < length; i++) {
+  for (let i = 0; i < length; i++) {
     text += possible.charAt(Math.floor(Math.random() * possible.length));
   }
   return text;
