@@ -1,5 +1,11 @@
-let scope = process.env.SCOPE;
-const allowedOrigins = JSON.parse(process.env.ORIGINS);
+// Example values of environment variables:
+// PORT="8888" (not required, requires restart)
+// SCOPE="user-read-currently-playing"
+// REDIRECT_URI="http://localhost:8888/callback"
+// FRONTEND_URI="http://localhost:3000"
+// SPOTIFY_CLIENT_ID="26e418da6b2a371c487229da0c2f3e1e"
+// SPOTIFY_CLIENT_SECRET="e209fa710a61b07e3e44ca688fe9e392"
+// ORIGINS='["http://localhost:3000"]' (requires restart)
 
 let express = require("express");
 let request = require("request");
@@ -7,9 +13,9 @@ let cors = require("cors");
 let querystring = require("querystring");
 let cookieParser = require("cookie-parser");
 
-let redirect_uri = process.env.REDIRECT_URI || "http://localhost:8888/callback";
-
 let stateKey = "spotify_auth_state";
+
+const allowedOrigins = JSON.parse(process.env.ORIGINS);
 
 const corsOptions = {
   origin: function (origin, callback) {
@@ -34,8 +40,8 @@ app.get("/login", function (req, res) {
       querystring.stringify({
         response_type: "code",
         client_id: process.env.SPOTIFY_CLIENT_ID,
-        scope: scope,
-        redirect_uri: redirect_uri,
+        scope: process.env.SCOPE,
+        redirect_uri: process.env.REDIRECT_URI,
         state: state,
       })
   );
@@ -62,7 +68,7 @@ app.get("/callback", function (req, res) {
     url: "https://accounts.spotify.com/api/token",
     form: {
       code: code,
-      redirect_uri: redirect_uri,
+      redirect_uri: process.env.REDIRECT_URI,
       grant_type: "authorization_code",
     },
     headers: {
@@ -91,7 +97,7 @@ app.get("/callback", function (req, res) {
     var access_token = body.access_token;
     var expires_in = body.expires_in;
     var refresh_token = body.refresh_token;
-    let uri = process.env.FRONTEND_URI || "http://localhost:3000";
+    let uri = process.env.FRONTEND_URI;
 
     res.redirect(
       uri +
