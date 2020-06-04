@@ -152,13 +152,6 @@ app.get("/refresh_token", function (req, res) {
   });
 });
 
-app.get("/testt", function (req, res) {
-  var refresh_token = req.query.refresh_token;
-  var list = ["item1", "item2", refresh_token];
-  res.json(list);
-  console.log("Sent list of items");
-});
-
 let port = process.env.PORT || 8888;
 console.log(
   `Listening on port ${port}. Go /login to initiate authentication flow.`
