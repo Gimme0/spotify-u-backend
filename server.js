@@ -1,5 +1,5 @@
 let scope = process.env.SCOPE;
-const allowedOrigins = ["http://localhost:3000", "https://gimme0.github.io"];
+const allowedOrigins = JSON.parse(process.env.ORIGINS);
 
 let express = require("express");
 let request = require("request");
